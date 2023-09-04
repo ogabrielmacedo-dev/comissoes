@@ -1,0 +1,83 @@
+//Criar generator SEQ_CODCOMISSOESIN da tabela de comissões
+================================================================================
+
+CREATE TABLE COMISSOESIN (
+    CODCOMISSOES CHAVE NOT NULL PRIMARY KEY,
+    CODVENDED CHAVE NOT NULL,
+    DATA_VENDA DATE DEFAULT CURRENT_DATE,
+    DATA_PAGAMENTO DATE,
+    TIPO_COMISSAO INTEGER,
+    VALOR_DA_COMISSAO VALOR,
+    FLAG_PAGAMENTO FLAG DEFAULT 'N',
+    FOREIGN KEY (CODVENDED) REFERENCES VENDEDOR (CODVENDED));
+
+================================================================================
+CRIAÇÃO DOS CAMPOS NA TABELA VENDEDOR
+
+
+ALTER TABLE VENDEDOR
+ADD VENDED_INDICACAO CODIGO REFERENCES VENDEDOR (CODIGO),
+ADD QNT_INDICACOES INT DEFAULT '0';
+
+================================================================================
+//UPDATE DOS CAMPOS DA TABELA VENDEDOR PARA 0
+
+
+UPDATE VENDEDOR
+SET QNT_INDICACOES = '0'
+WHERE QNT_INDICACOES IS NULL;
+
+================================================================================
+
+//trigger para alimentar os campos do contador
+
+CREATE trigger movenda_vendedor_bi0 for movenda
+active before insert position 0
+AS
+BEGIN
+      UPDATE VENDEDOR
+      SET QNT_INDICACOES = QNT_INDICACOES + 1
+      WHERE CODVENDED = NEW.CODVENDED and QNT_INDICACOES >= 0;
+END
+
+================================================================================
+//Trigger para alimentar a tabela comissoes after update da tabela vendedores.
+
+
+AS
+  DECLARE VARIABLE QNT_INDICACOES INT;
+BEGIN
+  QNT_INDICACOES = NEW.QNT_INDICACOES;
+
+  IF (old.QNT_INDICACOES = 0 and QNT_INDICACOES = 1) THEN
+      INSERT INTO COMISSOESIN (CODCOMISSOES, CODVENDED, TIPO_COMISSAO, VALOR_DA_COMISSAO)
+  VALUES (NEXT VALUE FOR SEQ_CODCOMISSOESIN, NEW.CODVENDED, 1 , 1.00);
+
+  ELSE IF (old.QNT_INDICACOES = 4 and QNT_INDICACOES = 5) THEN
+      INSERT INTO COMISSOESIN (CODCOMISSOES, CODVENDED, TIPO_COMISSAO, VALOR_DA_COMISSAO)
+  VALUES (NEXT VALUE FOR SEQ_CODCOMISSOESIN, NEW.CODVENDED, 5 , 5.00);
+
+
+  ELSE IF (old.QNT_INDICACOES = 9 and QNT_INDICACOES = 10) THEN
+      INSERT INTO COMISSOESIN (CODCOMISSOES, CODVENDED, TIPO_COMISSAO, VALOR_DA_COMISSAO)
+  VALUES (NEXT VALUE FOR SEQ_CODCOMISSOESIN, NEW.CODVENDED, 10 , 10.00);
+
+END
+
+================================================================================
+//Generator SEQ_CODCOMISSOESIN da tabela de comissões NÃO PRECISA MAIS.
+
+INSERT INTO COMISSOESIN (CODVENDED) VALUES (NEXT VALUE FOR SEQ_CODCOMISSOESIN)
+
+================================================================================
+
+Ajustar o campo 'QNT_INDICACOES' da tabela Vendedor o valor '-1' com os registros dos funcionários da Innovate.
+
+
+
+
+
+
+
+
+
