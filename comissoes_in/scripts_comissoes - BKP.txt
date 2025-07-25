@@ -71,7 +71,7 @@ INSERT INTO COMISSOESIN (CODVENDED) VALUES (NEXT VALUE FOR SEQ_CODCOMISSOESIN)
 
 ================================================================================
 
-Ajustar o campo 'QNT_INDICACOES' da tabela Vendedor o valor '-1' com os registros dos funcionários da Innovate.
+Ajustar o campo 'QNT_INDICACOES' da tabela Vendedor o valor '-1' com os registros dos funcionários
 
 
 
